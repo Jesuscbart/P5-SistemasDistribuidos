@@ -1,47 +1,44 @@
-const app = require("express")();
-const http = require("http").Server(app);
-const io = require("socket.io")(http);
-const host = process.env.HOST || "localhost";
-const port = process.env.PORT || 3000;
-const path = require("path");
+const express = require("express");
+const http = require("http");
+const socketIO = require("socket.io");
 
-// Configuración de la ruta raíz
+const app = express();
+const server = http.createServer(app);
+const io = socketIO(server);
+
+// Credenciales válidas
+const VALID_USERNAME = "admin"; // Cambia esto por el usuario que quieras
+const VALID_PASSWORD = "pass"; // Cambia esto por la contraseña que quieras
+
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile(__dirname + "/index.html");
 });
 
-// Objeto que almacenará los clientes conectados
-const clients = {};
-
-// Configuración de autenticación y envío de mensajes
 io.on("connection", (socket) => {
-  clients[socket.id] = { isAuthenticated: false }; // Almacena el estado de autenticación
+  socket.isAuthenticated = false; // Estado inicial de autenticación
 
-  // Recepción de mensajes de los clientes autenticados
-  socket.on("chat message", (msg) => {
-    if (clients[socket.id].isAuthenticated) {
-      io.emit("chat message", msg);
-    }
-  });
-
-  // Autenticación
-  socket.on("check password", (password) => {
-    const VALID_PASSWORD = "pass"; // CONTRASEÑA
-    if (password === VALID_PASSWORD) {
-      clients[socket.id].isAuthenticated = true;
-      socket.emit("password correct");
+  socket.on("login", (credentials) => {
+    if (
+      credentials.username === VALID_USERNAME &&
+      credentials.password === VALID_PASSWORD
+    ) {
+      socket.emit("login success");
+      socket.isAuthenticated = true;
+      socket.username = VALID_USERNAME; // Almacenamos el nombre de usuario en el socket
     } else {
-      socket.emit("password incorrect");
+      socket.emit("login failed");
     }
   });
 
-  // Desconexión
-  socket.on("disconnect", () => {
-    delete clients[socket.id];
+  socket.on("chat message", (msg) => {
+    if (socket.isAuthenticated) {
+      const messageWithUsername = `${socket.username}: ${msg}`; // Formato del mensaje con el nombre de usuario
+      io.emit("chat message", messageWithUsername);
+    }
   });
 });
 
-// Inicio del servidor en el puerto y host especificados
-http.listen(port, host, () => {
-  console.log(`Socket.IO server running at http://${host}:${port}/`);
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

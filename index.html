@@ -68,12 +68,21 @@
   </head>
 
   <body>
+    <!-- Formulario de Login -->
     <form id="login-form">
+      <input
+        type="text"
+        id="username"
+        placeholder="Username"
+        autocomplete="off"
+        required
+      />
       <input
         type="password"
         id="password"
-        placeholder="Enter password"
+        placeholder="Password"
         autocomplete="off"
+        required
       />
       <button type="submit">Login</button>
     </form>
@@ -95,13 +104,15 @@
         const chatForm = document.getElementById("form");
         const input = document.getElementById("input");
         const messages = document.getElementById("messages");
+        const usernameInput = document.getElementById("username");
         const passwordInput = document.getElementById("password");
         const closeButton = document.getElementById("close");
 
-        // Manejador que se ejecuta cuando se envía la contraseña
         loginForm.addEventListener("submit", function (e) {
           e.preventDefault();
-          socket.emit("check password", passwordInput.value);
+          const username = usernameInput.value;
+          const password = passwordInput.value;
+          socket.emit("login", { username, password });
         });
 
         // Manejador que se ejecuta cuando se envía un mensaje
@@ -114,15 +125,15 @@
         });
 
         // Manejador para el evento "password correct"
-        socket.on("password correct", function () {
-          chatForm.style.display = "flex";
+        socket.on("login success", function () {
+          document.getElementById("form").style.display = "flex";
           loginForm.style.display = "none";
         });
 
         // Manejador para el evento "password incorrect"
-        socket.on("password incorrect", function () {
-          alert("Incorrect password!");
-          passwordInput.value = ""; // Limpia el campo de contraseña
+        socket.on("login failed", function () {
+          alert("Login failed! Incorrect username or password.");
+          passwordInput.value = ""; // Clear password field
         });
 
         // Manejador para cuando se recibe un mensaje
