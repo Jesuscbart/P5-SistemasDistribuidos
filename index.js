@@ -6,33 +6,48 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
-// Credenciales válidas
-const VALID_USERNAME = "admin"; // Cambia esto por el usuario que quieras
-const VALID_PASSWORD = "pass"; // Cambia esto por la contraseña que quieras
+let users = []; // Almacena los usuarios registrados
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
 io.on("connection", (socket) => {
-  socket.isAuthenticated = false; // Estado inicial de autenticación
+  socket.on("register", (credentials) => {
+    const userExists = users.find(
+      (user) => user.username === credentials.username,
+    );
+    if (!userExists) {
+      users.push({
+        username: credentials.username,
+        password: credentials.password,
+      });
+      socket.emit("register success", credentials.username);
+      socket.isAuthenticated = true; // Marcar el usuario como autenticado
+      socket.username = credentials.username; // Almacenar el nombre de usuario en el socket
+    } else {
+      socket.emit("register failed", "Username already exists");
+    }
+  });
 
   socket.on("login", (credentials) => {
-    if (
-      credentials.username === VALID_USERNAME &&
-      credentials.password === VALID_PASSWORD
-    ) {
-      socket.emit("login success");
+    const user = users.find(
+      (user) =>
+        user.username === credentials.username &&
+        user.password === credentials.password,
+    );
+    if (user) {
+      socket.emit("login success", credentials.username);
       socket.isAuthenticated = true;
-      socket.username = VALID_USERNAME; // Almacenamos el nombre de usuario en el socket
+      socket.username = credentials.username;
     } else {
-      socket.emit("login failed");
+      socket.emit("login failed", "Invalid username or password");
     }
   });
 
   socket.on("chat message", (msg) => {
     if (socket.isAuthenticated) {
-      const messageWithUsername = `${socket.username}: ${msg}`; // Formato del mensaje con el nombre de usuario
+      const messageWithUsername = `${socket.username}: ${msg}`;
       io.emit("chat message", messageWithUsername);
     }
   });
