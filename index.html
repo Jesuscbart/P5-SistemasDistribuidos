@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Socket.IO chat</title>
+    <style>
+      body {
+        margin: 0;
+        padding-bottom: 3rem;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+      }
+
+      #login-form,
+      #form {
+        background: rgba(0, 0, 0, 0.15);
+        padding: 0.25rem;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        height: 3rem;
+        box-sizing: border-box;
+        backdrop-filter: blur(10px);
+      }
+
+      #input,
+      #password {
+        border: none;
+        padding: 0 1rem;
+        flex-grow: 1;
+        border-radius: 2rem;
+        margin: 0.25rem;
+      }
+
+      #input:focus,
+      #password:focus {
+        outline: none;
+      }
+
+      #login-form > button,
+      #form > button {
+        background: #333;
+        border: none;
+        padding: 0 1rem;
+        margin: 0.25rem;
+        border-radius: 3px;
+        outline: none;
+        color: #fff;
+      }
+
+      #messages {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        padding-top: 3rem;
+      }
+
+      #messages > li {
+        padding: 0.5rem 1rem;
+      }
+
+      #messages > li:nth-child(odd) {
+        background: #efefef;
+      }
+    </style>
+  </head>
+
+  <body>
+    <form id="login-form">
+      <input
+        type="password"
+        id="password"
+        placeholder="Enter password"
+        autocomplete="off"
+      />
+      <button type="submit">Login</button>
+    </form>
+    <ul id="messages"></ul>
+    <form id="form" action="" style="display: none">
+      <input id="input" placeholder="Enter message" autocomplete="off" /><button
+        type="submit"
+      >
+        Send
+      </button>
+      <button type="button" id="close">Close Connection</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const socket = io(); // Crea un socket
+
+        const loginForm = document.getElementById("login-form");
+        const chatForm = document.getElementById("form");
+        const input = document.getElementById("input");
+        const messages = document.getElementById("messages");
+        const passwordInput = document.getElementById("password");
+        const closeButton = document.getElementById("close");
+
+        // Manejador que se ejecuta cuando se envía la contraseña
+        loginForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+          socket.emit("check password", passwordInput.value);
+        });
+
+        // Manejador que se ejecuta cuando se envía un mensaje
+        chatForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+          if (input.value) {
+            socket.emit("chat message", input.value);
+            input.value = "";
+          }
+        });
+
+        // Manejador para el evento "password correct"
+        socket.on("password correct", function () {
+          chatForm.style.display = "flex";
+          loginForm.style.display = "none";
+        });
+
+        // Manejador para el evento "password incorrect"
+        socket.on("password incorrect", function () {
+          alert("Incorrect password!");
+          passwordInput.value = ""; // Limpia el campo de contraseña
+        });
+
+        // Manejador para cuando se recibe un mensaje
+        socket.on("chat message", function (msg) {
+          const item = document.createElement("li");
+          item.textContent = msg;
+          messages.appendChild(item);
+          window.scrollTo(0, document.body.scrollHeight);
+        });
+
+        // Manejador para el botón "Close Connection"
+        closeButton.addEventListener("click", function () {
+          socket.disconnect(); // Desconecta el socket
+
+          // Deshabilita los elementos de la interfaz
+          input.disabled = true;
+          closeButton.disabled = true;
+          chatForm.querySelector("button[type='submit']").disabled = true;
+        });
+      });
+    </script>
+  </body>
+</html>
