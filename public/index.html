@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Socket.IO chat</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css" />
+  </head>
+  <body>
+    <button class="button" onclick="showForm('login')">Login</button>
+    <button class="button" onclick="showForm('register')">Sign Up</button>
+
+    <form id="login-form">
+      <input type="text" id="username" placeholder="Username" autocomplete="off" required/>
+      <input type="password" id="password" placeholder="Password" autocomplete="off" required/>
+      <button type="submit">Login</button>
+    </form>
+
+    <form id="register-form">
+      <input type="text" id="register-username" placeholder="Username" autocomplete="off" required/>
+      <input type="password" id="register-password" placeholder="Password" autocomplete="off" required/>
+      <button type="submit">Register</button>
+    </form>
+
+    <ul id="messages"></ul>
+    <form id="form" action="" style="display: none">
+      <input id="input" placeholder="Enter message" autocomplete="off" />
+      <button type="submit">Send</button>
+      <button type="button" id="close">Close Connection</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/scripts.js"></script>
+  </body>
+</html>
