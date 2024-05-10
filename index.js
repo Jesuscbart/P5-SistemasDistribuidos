@@ -6,6 +6,8 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
+app.use(express.static("public"));
+
 let users = []; // Almacena los usuarios registrados
 
 app.get("/", (req, res) => {
