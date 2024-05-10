@@ -1,8 +1,7 @@
 body {
   margin: 0;
   padding-bottom: 3rem;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -10,9 +9,7 @@ body {
   background-color: #f4f4f4;
 }
 
-#login-form,
-#register-form,
-#form {
+#login-form, #register-form, #form {
   background: rgba(0, 0, 0, 0.15);
   padding: 0.25rem;
   position: fixed;
@@ -26,11 +23,7 @@ body {
   display: none;
 }
 
-#input,
-#username,
-#register-username,
-#password,
-#register-password {
+#input, #username, #register-username, #password, #register-password {
   border: none;
   padding: 0 1rem;
   flex-grow: 1;
@@ -38,17 +31,11 @@ body {
   margin: 0.25rem;
 }
 
-#input:focus,
-#username:focus,
-#register-username:focus,
-#password:focus,
-#register-password:focus {
+#input:focus, #username:focus, #register-username:focus, #password:focus, #register-password:focus {
   outline: none;
 }
 
-#login-form > button,
-#register-form > button,
-#form > button {
+#login-form > button, #register-form > button, #form > button {
   background: #333;
   border: none;
   padding: 0 1rem;
@@ -63,14 +50,23 @@ body {
   margin: 0;
   padding: 0;
   padding-top: 3rem;
+  width: 100%; /* Full width */
+  max-width: 800px; /* Maximum width */
+  overflow: auto; /* Allow scrolling */
 }
 
 #messages > li {
-  padding: 0.5rem 1rem;
+  background-color: #fff; /* White background */
+  padding: 10px 15px; /* Larger padding */
+  margin-bottom: 8px; /* Space between messages */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Subtle shadow */
+  max-width: 70%; /* Max width */
+  word-wrap: break-word; /* Break long words */
 }
 
 #messages > li:nth-child(odd) {
-  background: #efefef;
+  background: #efefef; /* Light grey for odd messages */
 }
 
 .button {
