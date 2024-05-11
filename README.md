@@ -1,18 +1,23 @@
-# chat-example
+# Práctica 5 - Programación de sistemas distribuidos
 
-This is the source code for a very simple chat example used for
-the [Getting Started](http://socket.io/get-started/chat/) guide
-of the Socket.IO website.
+Jesus Cuesta Bartolomé  
+10/05/2024
 
-Please refer to it to learn how to run this application.
+## Chat en Tiempo Real
 
-You can also spin up a free Heroku dyno to test it out:
+### Descripción
+Este proyecto es una aplicación de chat en tiempo real construida con Node.js, que utiliza Socket.IO para la comunicación en tiempo real entre el servidor y los clientes, y MongoDB para almacenar datos de los usuarios. La aplicación permite a los usuarios registrarse, iniciar sesión, enviar mensajes y desconectarse, todo en tiempo real.
 
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/socketio/chat-example)
+### Tecnologías Utilizadas
+- **Node.js**: Plataforma de ejecución para JavaScript del lado del servidor.
+- **Express**: Framework para aplicaciones web para Node.js.
+- **Socket.IO**: Biblioteca para aplicaciones web en tiempo real.
+- **MongoDB**: Base de datos NoSQL para almacenamiento de datos de usuario.
+- **Mongoose**: Biblioteca para modelar datos de MongoDB en aplicaciones Node.js.
+- **Bcrypt**: Biblioteca para ayudar a hash contraseñas de manera segura.
 
-Or run it on [Repl.it](https://repl.it/):
-
-[![Run on Repl.it](https://repl.it/badge/github/socketio/chat-example)](https://repl.it/github/socketio/chat-example)
-
--------
-
+### Características
+- **Registro de Usuario**: Los usuarios pueden registrarse proporcionando un nombre de usuario y contraseña.
+- **Inicio de Sesión de Usuario**: Los usuarios registrados pueden iniciar sesión utilizando sus credenciales.
+- **Chat en Tiempo Real**: Los usuarios pueden enviar y recibir mensajes instantáneamente sin recargar la página.
+- **Desconexión Segura**: Los usuarios pueden desconectarse y el sistema notifica a otros usuarios.
