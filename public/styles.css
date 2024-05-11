@@ -65,10 +65,6 @@ body {
   word-wrap: break-word; /* Break long words */
 }
 
-#messages > li:nth-child(odd) {
-  background: #efefef; /* Light grey for odd messages */
-}
-
 .button {
   padding: 10px 20px;
   margin: 10px;
