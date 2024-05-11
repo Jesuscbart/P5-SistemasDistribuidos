@@ -14,7 +14,16 @@ Or run it on [Repl.it](https://repl.it/):
 
 [![Run on Repl.it](https://repl.it/badge/github/socketio/chat-example)](https://repl.it/github/socketio/chat-example)
 
+-------
+
 ## Funcionalidades extra
 
 * Botón de cerrar conexión
 * Contraseña de acceso
+
+-------
+
+## Temas a solucionar
+
+* Que después de cerrar conexión, puedas volver a iniciar sesión
+* Que no puedas logearte si ya lo estás
