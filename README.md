@@ -25,5 +25,9 @@ Or run it on [Repl.it](https://repl.it/):
 
 ## Temas a solucionar
 
-* Que después de cerrar conexión, puedas volver a iniciar sesión
 * Que no puedas logearte si ya lo estás
+* Coger estilos del proyecto robado
+* Comentar código
+* Mirar si se puede desplegar la aplicación
+* Hacer un readme
+* Hacer memoria con diagrama
