@@ -1,6 +1,6 @@
 # Práctica 5 - Programación de sistemas distribuidos
 
-Jesus Cuesta Bartolomé  
+Jesús Cuesta Bartolomé  
 10/05/2024
 
 ## Chat en Tiempo Real
