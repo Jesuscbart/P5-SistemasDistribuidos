@@ -11,6 +11,8 @@ const registerButton = document.querySelector(
   "button[onclick=\"showForm('register')\"]",
 );
 
+//let isAuthenticated = false;
+
 function showForm(type) {
   if (type === "login") {
     loginForm.style.display = "flex";
@@ -36,6 +38,7 @@ registerForm.addEventListener("submit", function (e) {
 });
 
 socket.on("login success", function () {
+  //isAuthenticated = true;
   loginForm.style.display = "none";
   registerForm.style.display = "none";
   chatForm.style.display = "flex"; // Mostrar formulario de chat
@@ -65,11 +68,14 @@ chatForm.addEventListener("submit", function (e) {
 });
 
 socket.on("chat message", function (msg) {
-  console.log("New message:", msg); // Debug: Log received message
+  /*if (!isAuthenticated) {
+    console.log("Received message but user is not authenticated.");
+    return; // No mostrar mensajes si no está autenticado
+  }*/
   const item = document.createElement("li");
   item.textContent = msg;
   messages.appendChild(item);
-  messages.scrollTop = messages.scrollHeight; // Ensure the message box scrolls to the latest message
+  messages.scrollTop = messages.scrollHeight;
 });
 
 document.getElementById("close").addEventListener("click", function () {

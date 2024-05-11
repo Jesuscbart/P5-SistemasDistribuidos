@@ -13,6 +13,9 @@ const User = require("./User");
 
 const mongoURI = process.env["mongoURI"];
 
+// Definición correcta de activeUsers en un ámbito que es global a todo el archivo
+const activeUsers = new Map();
+
 mongoose
   .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB connected"))
@@ -29,43 +32,48 @@ io.on("connection", (socket) => {
     try {
       const user = new User(credentials);
       await user.save();
+      socket.isAuthenticated = true;
+      socket.username = user.username;
       socket.emit("register success", user.username);
-      // Setea el usuario como autenticado aquí si es necesario
     } catch (error) {
-      socket.emit(
-        "register failed",
-        "Username already exists or another error",
-      );
+      socket.emit("register failed", error.message);
     }
   });
 
   socket.on("login", async (credentials) => {
-    try {
-      const user = await User.findOne({ username: credentials.username });
-      if (user && (await bcrypt.compare(credentials.password, user.password))) {
-        socket.emit("login success", user.username);
-        socket.username = user.username;
-        socket.isAuthenticated = true; // Ensure this is set correctly
-        console.log("User authenticated:", user.username); // Debug: Check user authentication
-      } else {
-        socket.emit("login failed", "Invalid username or password");
+    const user = await User.findOne({ username: credentials.username });
+    if (user && (await bcrypt.compare(credentials.password, user.password))) {
+      if (activeUsers.has(user.username)) {
+        socket.emit("login failed", "User already logged in");
+        return;
       }
-    } catch (error) {
-      console.error("Error during login: ", error);
-      socket.emit("login failed", "Login error");
+
+      // Añadir el usuario al mapa de usuarios activos
+      activeUsers.set(user.username, socket.id);
+      socket.username = user.username;
+      socket.isAuthenticated = true;
+
+      socket.emit("login success", user.username);
+      io.emit("chat message", `${user.username} has joined the chat`); // Notificar a todos los usuarios
+
+      // Escuchar desconexiones para eliminar al usuario del mapa
+      socket.on("disconnect", () => {
+        activeUsers.delete(socket.username);
+        io.emit("chat message", `${socket.username} has disconnected`); // Notificar desconexión
+        console.log(`${socket.username} has disconnected`);
+      });
+    } else {
+      socket.emit("login failed", "Invalid username or password");
     }
   });
 
   socket.on("chat message", (msg) => {
-    console.log("Received message from:", socket.username); // Debug: Who is sending the message?
-    console.log("Authenticated:", socket.isAuthenticated); // Debug: Is the sender authenticated?
-
     if (socket.isAuthenticated) {
       const messageWithUsername = `${socket.username}: ${msg}`;
-      console.log("Broadcasting message:", messageWithUsername); // Debug: What message is being sent?
+      // Usar io.emit para enviar a todos los clientes, incluido el remitente
       io.emit("chat message", messageWithUsername);
     } else {
-      console.log("Message not sent, user not authenticated."); // Debug: Authentication failed
+      console.log("Attempt to send message by unauthenticated user.");
     }
   });
 });
