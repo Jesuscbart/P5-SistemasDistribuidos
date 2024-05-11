@@ -76,7 +76,5 @@ document.getElementById("close").addEventListener("click", function () {
   socket.disconnect();
   chatForm.style.display = "none"; // Ocultar formulario de chat
   input.disabled = true; // Desactivar entrada de mensaje
-  loginButton.style.display = "block"; // Mostrar botón de login
-  registerButton.style.display = "block"; // Mostrar botón de registro
   alert("You have been disconnected.");
 });
