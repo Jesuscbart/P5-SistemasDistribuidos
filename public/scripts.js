@@ -1,6 +1,6 @@
 // Inicialización del socket
 const socket = io();
-// Referencias a los elementos del formulario y mensajes en el DOM
+// Referencias a los elementos del formulario y mensajes
 const loginForm = document.getElementById("login-form");
 const registerForm = document.getElementById("register-form");
 const chatForm = document.getElementById("form");
@@ -60,7 +60,7 @@ socket.on("login failed", function (message) {
 
 socket.on("register success", function (message) {
   alert("Register successful: " + message);
-  showForm("login"); // After successful registration, show the login form
+  showForm("login"); // Después del registro, mostrar el formulario de login
 });
 
 socket.on("register failed", function (message) {
