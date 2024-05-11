@@ -1,18 +1,23 @@
+// Inicialización del socket
 const socket = io();
+// Referencias a los elementos del formulario y mensajes en el DOM
 const loginForm = document.getElementById("login-form");
 const registerForm = document.getElementById("register-form");
 const chatForm = document.getElementById("form");
 const input = document.getElementById("input");
 const messages = document.getElementById("messages");
+
 const loginButton = document.querySelector(
   "button[onclick=\"showForm('login')\"]",
 );
+
 const registerButton = document.querySelector(
   "button[onclick=\"showForm('register')\"]",
 );
 
 let isAuthenticated = false;
 
+// Función para mostrar los formularios de login o registro
 function showForm(type) {
   if (type === "login") {
     loginForm.style.display = "flex";
@@ -23,6 +28,7 @@ function showForm(type) {
   }
 }
 
+// Manejador de eventos para el formulario de login
 loginForm.addEventListener("submit", function (e) {
   e.preventDefault();
   const username = document.getElementById("username").value;
@@ -30,6 +36,7 @@ loginForm.addEventListener("submit", function (e) {
   socket.emit("login", { username, password });
 });
 
+// Manejador de eventos para el formulario de registro
 registerForm.addEventListener("submit", function (e) {
   e.preventDefault();
   const username = document.getElementById("register-username").value;
@@ -37,6 +44,7 @@ registerForm.addEventListener("submit", function (e) {
   socket.emit("register", { username, password });
 });
 
+//Eventos de socket para manejar el inicio de sesión y registro
 socket.on("login success", function () {
   isAuthenticated = true;
   loginForm.style.display = "none";
@@ -67,6 +75,7 @@ chatForm.addEventListener("submit", function (e) {
   }
 });
 
+// Evento de socket para manejar la recepción de mensajes
 socket.on("chat message", function (msg) {
   if (!isAuthenticated) {
     console.log("Received message but user is not authenticated.");
@@ -78,6 +87,7 @@ socket.on("chat message", function (msg) {
   messages.scrollTop = messages.scrollHeight;
 });
 
+// Evento para desconectar el socket y limpiar la interfaz
 document.getElementById("close").addEventListener("click", function () {
   socket.disconnect();
   chatForm.style.display = "none"; // Ocultar formulario de chat

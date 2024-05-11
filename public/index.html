@@ -1,32 +1,41 @@
 <!doctype html>
 <html>
   <head>
+    <!-- Configuración básica de la página, título y referencia a los estilos CSS -->
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Socket.IO chat</title>
     <link rel="stylesheet" type="text/css" href="/styles.css" />
   </head>
   <body>
+    <!-- Botones para mostrar los formularios de login y registro -->
     <button class="button" onclick="showForm('login')">Login</button>
     <button class="button" onclick="showForm('register')">Sign Up</button>
 
+    <!-- Formulario de login -->
     <form id="login-form">
       <input type="text" id="username" placeholder="Username" autocomplete="off" required/>
       <input type="password" id="password" placeholder="Password" autocomplete="off" required/>
       <button type="submit">Login</button>
     </form>
 
+    <!-- Formulario de registro -->
     <form id="register-form">
       <input type="text" id="register-username" placeholder="Username" autocomplete="off" required/>
       <input type="password" id="register-password" placeholder="Password" autocomplete="off" required/>
       <button type="submit">Register</button>
     </form>
 
+    <!-- Lista para mostrar mensajes del chat -->
     <ul id="messages"></ul>
+
+    <!-- Formulario para enviar mensajes, oculto inicialmente -->
     <form id="form" action="" style="display: none">
       <input id="input" placeholder="Enter message" autocomplete="off" />
       <button type="submit">Send</button>
       <button type="button" id="close">Close Connection</button>
     </form>
+
+    <!-- Carga los scripts necesarios para Socket.IO y el script principal -->
     <script src="/socket.io/socket.io.js"></script>
     <script src="/scripts.js"></script>
   </body>
