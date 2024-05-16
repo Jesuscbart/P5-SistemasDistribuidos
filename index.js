@@ -41,15 +41,14 @@ app.get("/", (req, res) => {
 
 // Manejo de conexiones socket.io
 io.on("connection", (socket) => {
-
   // Escuchar eventos 'register' (registro)
   socket.on("register", async (credentials) => {
     try {
-      const user = new User(credentials);
-      await user.save();
-      socket.isAuthenticated = true;
-      socket.username = user.username;
-      socket.emit("register success", user.username);
+      const user = new User(credentials); // Crear un nuevo usuario con los datos proporcionados
+      await user.save(); // Guardar el usuario en la base de datos
+      socket.isAuthenticated = true; // Marcar la conexión como autenticada
+      socket.username = user.username; // Asignar el nombre de usuario al socket
+      socket.emit("register success", user.username); // Enviar un mensaje de registro exitoso al cliente
     } catch (error) {
       socket.emit("register failed", error.message);
     }
@@ -57,24 +56,26 @@ io.on("connection", (socket) => {
 
   // Escuchar eventos 'login' (inicio de sesión)
   socket.on("login", async (credentials) => {
-    const user = await User.findOne({ username: credentials.username });
+    const user = await User.findOne({ username: credentials.username }); // Buscar un usuario con el nombre proporcionado
     if (user && (await bcrypt.compare(credentials.password, user.password))) {
+      // Comprobar si la contraseña es correcta
       if (activeUsers.has(user.username)) {
+        // Si el usuario ya está conectado, emitir un mensaje de error
         socket.emit("login failed", "User already logged in");
         return;
       }
 
-      // Añadir el usuario al mapa de usuarios activos
+      // Añadir el usuario al mapa de usuarios activos una vez logueado
       activeUsers.set(user.username, socket.id);
       socket.username = user.username;
       socket.isAuthenticated = true;
 
-      socket.emit("login success", user.username);
+      socket.emit("login success", user.username); // Enviar un mensaje de inicio de sesión exitoso al cliente
       io.emit("chat message", `${user.username} has joined the chat`); // Notificar a todos los usuarios
 
       // Manejar desconexiones
       socket.on("disconnect", () => {
-        activeUsers.delete(socket.username);
+        activeUsers.delete(socket.username); // Eliminar al usuario del mapa de usuarios activos
         io.emit("chat message", `${socket.username} has disconnected`); // Notificar desconexión
         console.log(`${socket.username} has disconnected`);
       });
@@ -86,7 +87,8 @@ io.on("connection", (socket) => {
   // Escuchar eventos 'chat message' (mensaje de chat)
   socket.on("chat message", (msg) => {
     if (socket.isAuthenticated) {
-      const messageWithUsername = `${socket.username}: ${msg}`;
+      // Comprobar si el usuario está autenticado
+      const messageWithUsername = `${socket.username}: ${msg}`; // Preparar el mensaje con el nombre de usuario
       // Usar io.emit para enviar a todos los clientes, incluido el remitente
       io.emit("chat message", messageWithUsername);
     } else {

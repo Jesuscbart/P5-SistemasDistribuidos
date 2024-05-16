@@ -24,7 +24,8 @@ UserSchema.pre("save", async function (next) {
   const user = this;
   // Si la contraseña del usuario ha sido modificada (o es nueva), procede a encriptarla
   if (user.isModified("password")) {
-    // Encriptar la contraseña usando bcrypt con un 'salt' de 8 rondas
+    // Encriptar la contraseña usando bcrypt con un 'salt' de 8 rondas con la funcion hash
+    // bcrypt realiza 8 rondas de hashing. Cada ronda añade más aleatoriedad
     user.password = await bcrypt.hash(user.password, 8);
   }
   next(); // Continuar con el guardado del documento después de la encriptación
